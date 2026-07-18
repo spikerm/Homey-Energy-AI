@@ -1,6 +1,6 @@
 {
   "id": "com.rexm.energyai",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "name": {
@@ -98,9 +98,6 @@
         "energy_ai_advice",
         "energy_ai_savings_today"
       ],
-      "energy": {
-        "cumulative": false
-      },
       "pair": [
         {
           "id": "list_devices",
