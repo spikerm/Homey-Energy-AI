@@ -1,0 +1,175 @@
+{
+  "id": "com.rexm.energyai",
+  "version": "0.1.0",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "name": {
+    "en": "Homey Energy AI",
+    "nl": "Homey Energy AI"
+  },
+  "description": {
+    "en": "Advisory-first intelligent energy management for Homey Pro.",
+    "nl": "Eerst adviserend, intelligent energiebeheer voor Homey Pro."
+  },
+  "category": [
+    "energy"
+  ],
+  "brandColor": "#1B5E20",
+  "author": {
+    "name": "Rex Markesteijn"
+  },
+  "support": "https://github.com/spikerm/Homey-Energy-AI/issues",
+  "source": "https://github.com/spikerm/Homey-Energy-AI",
+  "platforms": [
+    "local"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "capabilities": {
+    "energy_ai_mode": {
+      "type": "enum",
+      "title": {
+        "en": "AI mode",
+        "nl": "AI-modus"
+      },
+      "values": [
+        {
+          "id": "observe",
+          "title": {
+            "en": "Observe",
+            "nl": "Observeren"
+          }
+        },
+        {
+          "id": "advice",
+          "title": {
+            "en": "Advice",
+            "nl": "Advies"
+          }
+        }
+      ],
+      "getable": true,
+      "setable": false,
+      "uiComponent": "picker"
+    },
+    "energy_ai_score": {
+      "type": "number",
+      "title": {
+        "en": "Confidence",
+        "nl": "Zekerheid"
+      },
+      "units": "%",
+      "min": 0,
+      "max": 100,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "energy_ai_advice": {
+      "type": "string",
+      "title": {
+        "en": "Current advice",
+        "nl": "Huidig advies"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "energy_ai_savings_today": {
+      "type": "number",
+      "title": {
+        "en": "Estimated savings today",
+        "nl": "Geschatte besparing vandaag"
+      },
+      "units": "€",
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    }
+  },
+  "drivers": [
+    {
+      "id": "energy_ai",
+      "name": {
+        "en": "Energy AI",
+        "nl": "Energy AI"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "energy_ai_mode",
+        "energy_ai_score",
+        "energy_ai_advice",
+        "energy_ai_savings_today"
+      ],
+      "energy": {
+        "cumulative": false
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "images": {
+        "small": "/drivers/energy_ai/assets/images/small.png",
+        "large": "/drivers/energy_ai/assets/images/large.png"
+      }
+    }
+  ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "advice_changed",
+        "title": {
+          "en": "The Energy AI advice changed",
+          "nl": "Het Energy AI-advies is gewijzigd"
+        },
+        "tokens": [
+          {
+            "name": "advice",
+            "type": "string",
+            "title": {
+              "en": "Advice",
+              "nl": "Advies"
+            },
+            "example": {
+              "en": "Reserve battery capacity for solar production",
+              "nl": "Houd batterijruimte vrij voor zonneproductie"
+            }
+          },
+          {
+            "name": "confidence",
+            "type": "number",
+            "title": {
+              "en": "Confidence",
+              "nl": "Zekerheid"
+            },
+            "example": 80
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "recalculate_advice",
+        "title": {
+          "en": "Recalculate the Energy AI advice",
+          "nl": "Bereken het Energy AI-advies opnieuw"
+        }
+      }
+    ]
+  }
+}
