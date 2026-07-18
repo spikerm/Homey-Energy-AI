@@ -1,0 +1,6 @@
+{
+  "advice": {
+    "collecting_data": "Collecting data…",
+    "observation_only": "Observation mode is active; no devices are being controlled yet."
+  }
+}
