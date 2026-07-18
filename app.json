@@ -11,24 +11,15 @@
     "en": "Advisory-first intelligent energy management for Homey Pro.",
     "nl": "Eerst adviserend, intelligent energiebeheer voor Homey Pro."
   },
-  "category": [
-    "energy"
-  ],
+  "category": ["energy"],
   "brandColor": "#1B5E20",
   "author": {
     "name": "Rex Markesteijn"
   },
   "support": "https://github.com/spikerm/Homey-Energy-AI/issues",
   "source": "https://github.com/spikerm/Homey-Energy-AI",
-  "platforms": [
-    "local"
-  ],
+  "platforms": ["local"],
   "permissions": [],
-  "images": {
-    "small": "/assets/images/small.png",
-    "large": "/assets/images/large.png",
-    "xlarge": "/assets/images/xlarge.png"
-  },
   "capabilities": {
     "energy_ai_mode": {
       "type": "enum",
@@ -122,11 +113,7 @@
           "id": "add_devices",
           "template": "add_devices"
         }
-      ],
-      "images": {
-        "small": "/drivers/energy_ai/assets/images/small.png",
-        "large": "/drivers/energy_ai/assets/images/large.png"
-      }
+      ]
     }
   ],
   "flow": {
@@ -137,6 +124,13 @@
           "en": "The Energy AI advice changed",
           "nl": "Het Energy AI-advies is gewijzigd"
         },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=energy_ai"
+          }
+        ],
         "tokens": [
           {
             "name": "advice",
