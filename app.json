@@ -1,6 +1,6 @@
 {
   "id": "com.rexm.energyai",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "name": { "en": "Homey Energy AI", "nl": "Homey Energy AI" },
@@ -25,20 +25,21 @@
       ],
       "getable": true,
       "setable": false,
-      "uiComponent": "picker"
+      "uiComponent": "picker",
+      "icon": "/assets/icons/energy.svg"
     },
-    "energy_ai_score": { "type": "number", "title": { "en": "Confidence", "nl": "Zekerheid" }, "units": "%", "min": 0, "max": 100, "decimals": 0, "getable": true, "setable": false, "uiComponent": "sensor" },
-    "energy_ai_advice": { "type": "string", "title": { "en": "Current advice", "nl": "Huidig advies" }, "getable": true, "setable": false, "uiComponent": "sensor" },
-    "energy_ai_savings_today": { "type": "number", "title": { "en": "Estimated savings today", "nl": "Geschatte besparing vandaag" }, "units": "€", "decimals": 2, "getable": true, "setable": false, "uiComponent": "sensor" },
-    "energy_ai_grid_power": { "type": "number", "title": { "en": "Grid power", "nl": "Netvermogen" }, "units": "W", "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
-    "energy_ai_consumption_power": { "type": "number", "title": { "en": "Consumption", "nl": "Verbruik" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
-    "energy_ai_solar_power": { "type": "number", "title": { "en": "Solar production", "nl": "Zonneproductie" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
-    "energy_ai_battery_power": { "type": "number", "title": { "en": "Battery power", "nl": "Batterijvermogen" }, "units": "W", "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
-    "energy_ai_ev_power": { "type": "number", "title": { "en": "EV charging power", "nl": "EV-laadvermogen" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
-    "energy_ai_battery_advice": { "type": "string", "title": { "en": "Battery advice", "nl": "Batterijadvies" }, "getable": true, "setable": false, "uiComponent": "sensor" },
-    "energy_ai_ev_advice": { "type": "string", "title": { "en": "EV advice", "nl": "EV-advies" }, "getable": true, "setable": false, "uiComponent": "sensor" },
-    "energy_ai_data_status": { "type": "string", "title": { "en": "Data status", "nl": "Datastatus" }, "getable": true, "setable": false, "uiComponent": "sensor" },
-    "energy_ai_last_update": { "type": "string", "title": { "en": "Last update", "nl": "Laatste update" }, "getable": true, "setable": false, "uiComponent": "sensor" }
+    "energy_ai_score": { "type": "number", "title": { "en": "Confidence", "nl": "Zekerheid" }, "units": "%", "min": 0, "max": 100, "decimals": 0, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_advice": { "type": "string", "title": { "en": "Current advice", "nl": "Huidig advies" }, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_savings_today": { "type": "number", "title": { "en": "Estimated savings today", "nl": "Besparing vandaag" }, "units": "€", "decimals": 2, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_grid_power": { "type": "number", "title": { "en": "Grid power", "nl": "Netvermogen" }, "units": "W", "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_consumption_power": { "type": "number", "title": { "en": "Home consumption", "nl": "Woningverbruik" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_solar_power": { "type": "number", "title": { "en": "Solar production", "nl": "Zonneproductie" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/solar.svg" },
+    "energy_ai_battery_power": { "type": "number", "title": { "en": "Battery power", "nl": "Batterijvermogen" }, "units": "W", "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/battery.svg" },
+    "energy_ai_ev_power": { "type": "number", "title": { "en": "EV charging power", "nl": "EV-laadvermogen" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/ev.svg" },
+    "energy_ai_battery_advice": { "type": "string", "title": { "en": "Battery advice", "nl": "Batterijadvies" }, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/battery.svg" },
+    "energy_ai_ev_advice": { "type": "string", "title": { "en": "EV advice", "nl": "EV-advies" }, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/ev.svg" },
+    "energy_ai_data_status": { "type": "string", "title": { "en": "Data status", "nl": "Datastatus" }, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_last_update": { "type": "string", "title": { "en": "Last update", "nl": "Laatste update" }, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" }
   },
   "drivers": [
     {
