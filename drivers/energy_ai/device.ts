@@ -14,7 +14,7 @@ class EnergyAIDevice extends Homey.Device {
   override async onInit(): Promise<void> {
     this.adviceChangedTrigger = this.homey.flow.getDeviceTriggerCard('advice_changed');
     await this.ensureCapabilities();
-    this.log('Energy AI v0.5.0 device initialized');
+    this.log('Energy AI v0.6.0 device initialized');
     await this.refreshAdvice();
     this.startRefreshTimer();
   }
@@ -62,7 +62,8 @@ class EnergyAIDevice extends Homey.Device {
 
   private async ensureCapabilities(): Promise<void> {
     const required = [
-      'energy_ai_mode', 'energy_ai_score', 'energy_ai_advice',
+      'energy_ai_mode', 'energy_ai_score', 'energy_ai_energy_score',
+      'energy_ai_self_consumption', 'energy_ai_advice',
       'energy_ai_savings_today', 'energy_ai_grid_power',
       'energy_ai_consumption_power', 'energy_ai_solar_power',
       'energy_ai_battery_power', 'energy_ai_ev_power',
@@ -113,6 +114,8 @@ class EnergyAIDevice extends Homey.Device {
         this.setCapabilityValue('energy_ai_battery_power', filteredSnapshot.batteryPower),
         this.setCapabilityValue('energy_ai_ev_power', filteredSnapshot.evPower),
         this.setCapabilityValue('energy_ai_score', result.confidence),
+        this.setCapabilityValue('energy_ai_energy_score', result.energyScore),
+        this.setCapabilityValue('energy_ai_self_consumption', result.selfConsumption),
         this.setCapabilityValue('energy_ai_advice', result.advice),
         this.setCapabilityValue('energy_ai_savings_today', result.savingsToday),
         this.setCapabilityValue('energy_ai_battery_advice', result.batteryAdvice),
