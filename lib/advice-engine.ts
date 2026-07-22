@@ -8,13 +8,23 @@ export type AdviceResult = {
   savingsToday: number;
 };
 
+export type AdviceThresholds = {
+  evChargingPower: number;
+  batteryActivePower: number;
+  gridDeadbandPower: number;
+  highImportPower: number;
+  solarSurplusPower: number;
+};
+
 export class AdviceEngine {
-  evaluate(snapshot: EnergySnapshot, mode: string, evChargingThreshold = 250): AdviceResult {
-    const exporting = snapshot.gridPower < -250;
-    const highImport = snapshot.gridPower > 2500;
-    const batteryCharging = snapshot.batteryPower > 100;
-    const batteryDischarging = snapshot.batteryPower < -100;
-    const evCharging = snapshot.evPower >= evChargingThreshold;
+  evaluate(snapshot: EnergySnapshot, mode: string, thresholds: AdviceThresholds): AdviceResult {
+    const exporting = snapshot.gridPower < -thresholds.gridDeadbandPower;
+    const importing = snapshot.gridPower > thresholds.gridDeadbandPower;
+    const highImport = snapshot.gridPower > thresholds.highImportPower;
+    const batteryCharging = snapshot.batteryPower > thresholds.batteryActivePower;
+    const batteryDischarging = snapshot.batteryPower < -thresholds.batteryActivePower;
+    const evCharging = snapshot.evPower >= thresholds.evChargingPower;
+    const solarSurplus = exporting && snapshot.solarPower >= thresholds.solarSurplusPower;
 
     let advice = 'Energie in balans';
     let batteryAdvice = batteryCharging
@@ -24,7 +34,7 @@ export class AdviceEngine {
         : 'Batterij stand-by';
     let evAdvice = evCharging ? 'Auto wordt geladen' : 'Auto wordt niet geladen';
 
-    if (exporting && snapshot.solarPower > 500) {
+    if (solarSurplus) {
       advice = `${Math.abs(snapshot.gridPower)} W teruglevering`;
       batteryAdvice = batteryCharging ? 'Batterij gebruikt zon' : 'Batterij laden met zon';
       evAdvice = evCharging ? 'EV gebruikt zonne-overschot' : 'EV-laden kan starten';
@@ -32,11 +42,11 @@ export class AdviceEngine {
       advice = `${snapshot.gridPower} W hoge netafname`;
       batteryAdvice = batteryDischarging ? 'Batterij verlaagt piek' : 'Ontladen kan piek verlagen';
       evAdvice = evCharging ? 'EV-laden verlagen' : 'EV-laden uitstellen';
-    } else if (snapshot.gridPower < 0) {
+    } else if (exporting) {
       advice = `${Math.abs(snapshot.gridPower)} W teruglevering`;
-    } else if (snapshot.gridPower > 0) {
+    } else if (importing) {
       advice = `${snapshot.gridPower} W netafname`;
-    } else if (snapshot.solarPower > 250) {
+    } else if (snapshot.solarPower >= thresholds.solarSurplusPower) {
       advice = `${snapshot.solarPower} W zonneproductie`;
     }
 
@@ -49,7 +59,7 @@ export class AdviceEngine {
       advice,
       batteryAdvice,
       evAdvice,
-      savingsToday: exporting ? 0.85 : highImport ? 0.45 : 0.15,
+      savingsToday: solarSurplus ? 0.85 : highImport ? 0.45 : 0.15,
     };
   }
 }
