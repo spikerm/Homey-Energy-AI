@@ -3,7 +3,7 @@ import Homey from 'homey';
 class EnergyAIDevice extends Homey.Device {
   private adviceChangedTrigger?: Homey.FlowCardTriggerDevice;
 
-  async onInit(): Promise<void> {
+  override async onInit(): Promise<void> {
     this.adviceChangedTrigger = this.homey.flow.getDeviceTriggerCard('advice_changed');
 
     await this.setCapabilityValue('energy_ai_mode', 'observe');
