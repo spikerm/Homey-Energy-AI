@@ -1,115 +1,68 @@
 {
   "id": "com.rexm.energyai",
-  "version": "0.1.2",
+  "version": "0.3.0",
   "compatibility": ">=12.0.0",
   "sdk": 3,
-  "name": {
-    "en": "Homey Energy AI",
-    "nl": "Homey Energy AI"
-  },
+  "name": { "en": "Homey Energy AI", "nl": "Homey Energy AI" },
   "description": {
-    "en": "Advisory-first intelligent energy management for Homey Pro.",
-    "nl": "Eerst adviserend, intelligent energiebeheer voor Homey Pro."
+    "en": "Local energy analysis and advisory automation for Homey Pro.",
+    "nl": "Lokale energieanalyse en adviseringsautomatisering voor Homey Pro."
   },
   "category": ["energy"],
   "brandColor": "#1B5E20",
-  "author": {
-    "name": "Rex Markesteijn"
-  },
+  "author": { "name": "Rex Markesteijn" },
   "support": "https://github.com/spikerm/Homey-Energy-AI/issues",
   "source": "https://github.com/spikerm/Homey-Energy-AI",
   "platforms": ["local"],
-  "permissions": [],
+  "permissions": ["homey:manager:api"],
   "capabilities": {
     "energy_ai_mode": {
       "type": "enum",
-      "title": {
-        "en": "AI mode",
-        "nl": "AI-modus"
-      },
+      "title": { "en": "AI mode", "nl": "AI-modus" },
       "values": [
-        {
-          "id": "observe",
-          "title": {
-            "en": "Observe",
-            "nl": "Observeren"
-          }
-        },
-        {
-          "id": "advice",
-          "title": {
-            "en": "Advice",
-            "nl": "Advies"
-          }
-        }
+        { "id": "observe", "title": { "en": "Observe", "nl": "Observeren" } },
+        { "id": "advice", "title": { "en": "Advice", "nl": "Advies" } }
       ],
       "getable": true,
       "setable": false,
       "uiComponent": "picker"
     },
-    "energy_ai_score": {
-      "type": "number",
-      "title": {
-        "en": "Confidence",
-        "nl": "Zekerheid"
-      },
-      "units": "%",
-      "min": 0,
-      "max": 100,
-      "decimals": 0,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor"
-    },
-    "energy_ai_advice": {
-      "type": "string",
-      "title": {
-        "en": "Current advice",
-        "nl": "Huidig advies"
-      },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor"
-    },
-    "energy_ai_savings_today": {
-      "type": "number",
-      "title": {
-        "en": "Estimated savings today",
-        "nl": "Geschatte besparing vandaag"
-      },
-      "units": "€",
-      "decimals": 2,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor"
-    }
+    "energy_ai_score": { "type": "number", "title": { "en": "Confidence", "nl": "Zekerheid" }, "units": "%", "min": 0, "max": 100, "decimals": 0, "getable": true, "setable": false, "uiComponent": "sensor" },
+    "energy_ai_advice": { "type": "string", "title": { "en": "Current advice", "nl": "Huidig advies" }, "getable": true, "setable": false, "uiComponent": "sensor" },
+    "energy_ai_savings_today": { "type": "number", "title": { "en": "Estimated savings today", "nl": "Geschatte besparing vandaag" }, "units": "€", "decimals": 2, "getable": true, "setable": false, "uiComponent": "sensor" },
+    "energy_ai_grid_power": { "type": "number", "title": { "en": "Grid power", "nl": "Netvermogen" }, "units": "W", "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
+    "energy_ai_consumption_power": { "type": "number", "title": { "en": "Consumption", "nl": "Verbruik" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
+    "energy_ai_solar_power": { "type": "number", "title": { "en": "Solar production", "nl": "Zonneproductie" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
+    "energy_ai_battery_power": { "type": "number", "title": { "en": "Battery power", "nl": "Batterijvermogen" }, "units": "W", "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
+    "energy_ai_ev_power": { "type": "number", "title": { "en": "EV charging power", "nl": "EV-laadvermogen" }, "units": "W", "min": 0, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor" },
+    "energy_ai_battery_advice": { "type": "string", "title": { "en": "Battery advice", "nl": "Batterijadvies" }, "getable": true, "setable": false, "uiComponent": "sensor" },
+    "energy_ai_ev_advice": { "type": "string", "title": { "en": "EV advice", "nl": "EV-advies" }, "getable": true, "setable": false, "uiComponent": "sensor" },
+    "energy_ai_data_status": { "type": "string", "title": { "en": "Data status", "nl": "Datastatus" }, "getable": true, "setable": false, "uiComponent": "sensor" },
+    "energy_ai_last_update": { "type": "string", "title": { "en": "Last update", "nl": "Laatste update" }, "getable": true, "setable": false, "uiComponent": "sensor" }
   },
   "drivers": [
     {
       "id": "energy_ai",
-      "name": {
-        "en": "Energy AI",
-        "nl": "Energy AI"
-      },
+      "name": { "en": "Energy AI", "nl": "Energy AI" },
       "class": "sensor",
       "capabilities": [
         "energy_ai_mode",
         "energy_ai_score",
         "energy_ai_advice",
-        "energy_ai_savings_today"
+        "energy_ai_savings_today",
+        "energy_ai_grid_power",
+        "energy_ai_consumption_power",
+        "energy_ai_solar_power",
+        "energy_ai_battery_power",
+        "energy_ai_ev_power",
+        "energy_ai_battery_advice",
+        "energy_ai_ev_advice",
+        "energy_ai_data_status",
+        "energy_ai_last_update"
       ],
       "pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
+        { "id": "list_devices", "template": "list_devices", "navigation": { "next": "add_devices" } },
+        { "id": "add_devices", "template": "add_devices" }
       ]
     }
   ],
@@ -117,50 +70,16 @@
     "triggers": [
       {
         "id": "advice_changed",
-        "title": {
-          "en": "The Energy AI advice changed",
-          "nl": "Het Energy AI-advies is gewijzigd"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=energy_ai"
-          }
-        ],
+        "title": { "en": "The Energy AI advice changed", "nl": "Het Energy AI-advies is gewijzigd" },
+        "args": [{ "name": "device", "type": "device", "filter": "driver_id=energy_ai" }],
         "tokens": [
-          {
-            "name": "advice",
-            "type": "string",
-            "title": {
-              "en": "Advice",
-              "nl": "Advies"
-            },
-            "example": {
-              "en": "Reserve battery capacity for solar production",
-              "nl": "Houd batterijruimte vrij voor zonneproductie"
-            }
-          },
-          {
-            "name": "confidence",
-            "type": "number",
-            "title": {
-              "en": "Confidence",
-              "nl": "Zekerheid"
-            },
-            "example": 80
-          }
+          { "name": "advice", "type": "string", "title": { "en": "Advice", "nl": "Advies" }, "example": { "en": "Use available solar power", "nl": "Gebruik het beschikbare zonnevermogen" } },
+          { "name": "confidence", "type": "number", "title": { "en": "Confidence", "nl": "Zekerheid" }, "example": 80 }
         ]
       }
     ],
     "actions": [
-      {
-        "id": "recalculate_advice",
-        "title": {
-          "en": "Recalculate the Energy AI advice",
-          "nl": "Bereken het Energy AI-advies opnieuw"
-        }
-      }
+      { "id": "recalculate_advice", "title": { "en": "Recalculate the Energy AI advice", "nl": "Bereken het Energy AI-advies opnieuw" } }
     ]
   }
 }
