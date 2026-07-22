@@ -9,11 +9,12 @@ export type AdviceResult = {
 };
 
 export class AdviceEngine {
-  evaluate(snapshot: EnergySnapshot, mode: string): AdviceResult {
+  evaluate(snapshot: EnergySnapshot, mode: string, evChargingThreshold = 250): AdviceResult {
     const exporting = snapshot.gridPower < -250;
     const highImport = snapshot.gridPower > 2500;
     const batteryCharging = snapshot.batteryPower > 100;
     const batteryDischarging = snapshot.batteryPower < -100;
+    const evCharging = snapshot.evPower >= evChargingThreshold;
 
     let advice = 'Energie in balans';
     let batteryAdvice = batteryCharging
@@ -21,16 +22,16 @@ export class AdviceEngine {
       : batteryDischarging
         ? 'Batterij ontlaadt'
         : 'Batterij stand-by';
-    let evAdvice = snapshot.evPower > 100 ? 'Auto wordt geladen' : 'EV-laden stand-by';
+    let evAdvice = evCharging ? 'Auto wordt geladen' : 'Auto wordt niet geladen';
 
     if (exporting && snapshot.solarPower > 500) {
       advice = `${Math.abs(snapshot.gridPower)} W teruglevering`;
       batteryAdvice = batteryCharging ? 'Batterij gebruikt zon' : 'Batterij laden met zon';
-      evAdvice = snapshot.evPower > 100 ? 'EV gebruikt zonne-overschot' : 'EV-laden kan starten';
+      evAdvice = evCharging ? 'EV gebruikt zonne-overschot' : 'EV-laden kan starten';
     } else if (highImport) {
       advice = `${snapshot.gridPower} W hoge netafname`;
       batteryAdvice = batteryDischarging ? 'Batterij verlaagt piek' : 'Ontladen kan piek verlagen';
-      evAdvice = snapshot.evPower > 100 ? 'EV-laden verlagen' : 'EV-laden uitstellen';
+      evAdvice = evCharging ? 'EV-laden verlagen' : 'EV-laden uitstellen';
     } else if (snapshot.gridPower < 0) {
       advice = `${Math.abs(snapshot.gridPower)} W teruglevering`;
     } else if (snapshot.gridPower > 0) {
