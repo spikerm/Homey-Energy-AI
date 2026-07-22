@@ -14,7 +14,7 @@ class EnergyAIDevice extends Homey.Device {
   override async onInit(): Promise<void> {
     this.adviceChangedTrigger = this.homey.flow.getDeviceTriggerCard('advice_changed');
     await this.ensureCapabilities();
-    this.log('Energy AI device initialized');
+    this.log('Energy AI v0.4.0 device initialized');
     await this.refreshAdvice();
     this.refreshTimer = this.homey.setInterval(() => {
       this.refreshAdvice().catch(this.error);
@@ -34,6 +34,7 @@ class EnergyAIDevice extends Homey.Device {
       'energy_ai_battery_advice', 'energy_ai_ev_advice',
       'energy_ai_data_status', 'energy_ai_last_update',
     ];
+
     for (const capability of required) {
       if (!this.hasCapability(capability)) {
         this.log(`Adding missing capability: ${capability}`);
@@ -51,6 +52,11 @@ class EnergyAIDevice extends Homey.Device {
       const snapshot = await (this.homey.app as EnergyAIApp).readEnergySnapshot();
       const mode = String(this.getCapabilityValue('energy_ai_mode') ?? 'observe');
       const result = this.adviceEngine.evaluate(snapshot, mode);
+      const updateTime = new Date().toLocaleTimeString('nl-NL', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
 
       await Promise.all([
         this.setCapabilityValue('energy_ai_grid_power', snapshot.gridPower),
@@ -63,8 +69,8 @@ class EnergyAIDevice extends Homey.Device {
         this.setCapabilityValue('energy_ai_savings_today', result.savingsToday),
         this.setCapabilityValue('energy_ai_battery_advice', result.batteryAdvice),
         this.setCapabilityValue('energy_ai_ev_advice', result.evAdvice),
-        this.setCapabilityValue('energy_ai_data_status', `${snapshot.sourceCount} energiebronnen, ${snapshot.deviceCount} apparaten`),
-        this.setCapabilityValue('energy_ai_last_update', new Date().toLocaleString('nl-NL')),
+        this.setCapabilityValue('energy_ai_data_status', `${snapshot.sourceCount} bronnen gevonden`),
+        this.setCapabilityValue('energy_ai_last_update', updateTime),
       ]);
 
       if (this.adviceChangedTrigger) {
@@ -73,10 +79,12 @@ class EnergyAIDevice extends Homey.Device {
           confidence: result.confidence,
         }, {});
       }
+
       await this.setAvailable();
     } catch (error) {
       this.error('Energy refresh failed', error);
-      await this.setCapabilityValue('energy_ai_data_status', error instanceof Error ? error.message : 'Onbekende fout');
+      const message = error instanceof Error ? error.message : 'Onbekende fout';
+      await this.setCapabilityValue('energy_ai_data_status', `Leesfout: ${message}`);
     }
   }
 }
