@@ -3,7 +3,7 @@ import Homey from 'homey';
 class EnergyAIApp extends Homey.App {
   private recalculateAction?: Homey.FlowCardAction;
 
-  async onInit(): Promise<void> {
+  override async onInit(): Promise<void> {
     this.log('Homey Energy AI 0.1.0 started in advisory-only mode');
 
     this.recalculateAction = this.homey.flow.getActionCard('recalculate_advice');
