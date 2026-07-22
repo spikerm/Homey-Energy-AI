@@ -1,6 +1,6 @@
 {
   "id": "com.rexm.energyai",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "name": { "en": "Homey Energy AI", "nl": "Homey Energy AI" },
@@ -29,6 +29,8 @@
       "icon": "/assets/icons/energy.svg"
     },
     "energy_ai_score": { "type": "number", "title": { "en": "Confidence", "nl": "Zekerheid" }, "units": "%", "min": 0, "max": 100, "decimals": 0, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_energy_score": { "type": "number", "title": { "en": "Energy score", "nl": "Energiescore" }, "units": "/100", "min": 0, "max": 100, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
+    "energy_ai_self_consumption": { "type": "number", "title": { "en": "Solar self-consumption", "nl": "Eigen gebruik zon" }, "units": "%", "min": 0, "max": 100, "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/solar.svg" },
     "energy_ai_advice": { "type": "string", "title": { "en": "Current advice", "nl": "Huidig advies" }, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
     "energy_ai_savings_today": { "type": "number", "title": { "en": "Estimated savings today", "nl": "Besparing vandaag" }, "units": "€", "decimals": 2, "getable": true, "setable": false, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
     "energy_ai_grid_power": { "type": "number", "title": { "en": "Grid power", "nl": "Netvermogen" }, "units": "W", "decimals": 0, "getable": true, "setable": false, "insights": true, "uiComponent": "sensor", "icon": "/assets/icons/energy.svg" },
@@ -49,6 +51,8 @@
       "capabilities": [
         "energy_ai_mode",
         "energy_ai_score",
+        "energy_ai_energy_score",
+        "energy_ai_self_consumption",
         "energy_ai_advice",
         "energy_ai_savings_today",
         "energy_ai_grid_power",
