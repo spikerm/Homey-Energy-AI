@@ -1,6 +1,6 @@
 {
   "id": "com.rexm.energyai",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "name": { "en": "Homey Energy AI", "nl": "Homey Energy AI" },
@@ -72,6 +72,61 @@
           "max": 5000,
           "step": 10,
           "units": { "en": "W", "nl": "W" }
+        },
+        {
+          "id": "battery_active_threshold",
+          "type": "number",
+          "label": { "en": "Battery active threshold", "nl": "Drempel actief batterijvermogen" },
+          "hint": { "en": "Below this absolute power the battery is considered on standby.", "nl": "Onder dit absolute vermogen wordt de batterij als stand-by beschouwd." },
+          "value": 100,
+          "min": 0,
+          "max": 2000,
+          "step": 10,
+          "units": { "en": "W", "nl": "W" }
+        },
+        {
+          "id": "grid_deadband_threshold",
+          "type": "number",
+          "label": { "en": "Grid balance deadband", "nl": "Dode band netbalans" },
+          "hint": { "en": "Grid values within this range are shown as zero.", "nl": "Netwaarden binnen deze grens worden als nul weergegeven." },
+          "value": 100,
+          "min": 0,
+          "max": 1000,
+          "step": 10,
+          "units": { "en": "W", "nl": "W" }
+        },
+        {
+          "id": "high_import_threshold",
+          "type": "number",
+          "label": { "en": "High grid import", "nl": "Hoge netafname" },
+          "hint": { "en": "Above this power a high-import warning is generated.", "nl": "Boven dit vermogen wordt een waarschuwing voor hoge netafname gegeven." },
+          "value": 2500,
+          "min": 250,
+          "max": 25000,
+          "step": 100,
+          "units": { "en": "W", "nl": "W" }
+        },
+        {
+          "id": "solar_surplus_threshold",
+          "type": "number",
+          "label": { "en": "Solar surplus threshold", "nl": "Drempel zonne-overschot" },
+          "hint": { "en": "Minimum solar production for solar-surplus advice.", "nl": "Minimale zonneproductie voor advies over zonne-overschot." },
+          "value": 500,
+          "min": 0,
+          "max": 10000,
+          "step": 100,
+          "units": { "en": "W", "nl": "W" }
+        },
+        {
+          "id": "refresh_interval_seconds",
+          "type": "number",
+          "label": { "en": "Refresh interval", "nl": "Verversingsinterval" },
+          "hint": { "en": "How often energy values are refreshed. Minimum 10 seconds.", "nl": "Hoe vaak de energiewaarden worden vernieuwd. Minimaal 10 seconden." },
+          "value": 60,
+          "min": 10,
+          "max": 600,
+          "step": 10,
+          "units": { "en": "s", "nl": "s" }
         }
       ],
       "pair": [
