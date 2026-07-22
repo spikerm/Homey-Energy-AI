@@ -6,6 +6,8 @@ class EnergyAIDevice extends Homey.Device {
   override async onInit(): Promise<void> {
     this.adviceChangedTrigger = this.homey.flow.getDeviceTriggerCard('advice_changed');
 
+    await this.ensureCapabilities();
+
     await this.setCapabilityValue('energy_ai_mode', 'observe');
     await this.setCapabilityValue('energy_ai_score', 0);
     await this.setCapabilityValue(
@@ -15,6 +17,22 @@ class EnergyAIDevice extends Homey.Device {
     await this.setCapabilityValue('energy_ai_savings_today', 0);
 
     this.log('Energy AI device initialized');
+  }
+
+  private async ensureCapabilities(): Promise<void> {
+    const requiredCapabilities = [
+      'energy_ai_mode',
+      'energy_ai_score',
+      'energy_ai_advice',
+      'energy_ai_savings_today',
+    ];
+
+    for (const capability of requiredCapabilities) {
+      if (!this.hasCapability(capability)) {
+        this.log(`Adding missing capability: ${capability}`);
+        await this.addCapability(capability);
+      }
+    }
   }
 
   async recalculateAdvice(): Promise<void> {
