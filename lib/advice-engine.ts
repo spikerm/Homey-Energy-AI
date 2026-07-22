@@ -2,6 +2,8 @@ import type { EnergySnapshot } from './homey-energy-reader';
 
 export type AdviceResult = {
   confidence: number;
+  energyScore: number;
+  selfConsumption: number;
   advice: string;
   batteryAdvice: string;
   evAdvice: string;
@@ -25,6 +27,20 @@ export class AdviceEngine {
     const batteryDischarging = snapshot.batteryPower < -thresholds.batteryActivePower;
     const evCharging = snapshot.evPower >= thresholds.evChargingPower;
     const solarSurplus = exporting && snapshot.solarPower >= thresholds.solarSurplusPower;
+
+    const exportedPower = Math.max(0, -snapshot.gridPower);
+    const selfConsumedSolar = Math.max(0, snapshot.solarPower - exportedPower);
+    const selfConsumption = snapshot.solarPower > 0
+      ? Math.max(0, Math.min(100, Math.round((selfConsumedSolar / snapshot.solarPower) * 100)))
+      : 0;
+
+    let energyScore = 70;
+    if (snapshot.solarPower > 0) energyScore += Math.round(selfConsumption * 0.2);
+    if (exporting) energyScore -= Math.min(15, Math.round(exportedPower / 500));
+    if (highImport) energyScore -= Math.min(30, Math.round((snapshot.gridPower - thresholds.highImportPower) / 250));
+    if (batteryDischarging && importing) energyScore += 5;
+    if (batteryCharging && snapshot.solarPower > 0) energyScore += 5;
+    energyScore = Math.max(0, Math.min(100, energyScore));
 
     let advice = 'Energie in balans';
     let batteryAdvice = batteryCharging
@@ -56,6 +72,8 @@ export class AdviceEngine {
 
     return {
       confidence: Math.max(20, Math.min(95, 35 + snapshot.sourceCount * 12)),
+      energyScore,
+      selfConsumption,
       advice,
       batteryAdvice,
       evAdvice,
