@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import { AdviceEngine } from '../../lib/advice-engine';
+import { AdviceEngine, type AdviceThresholds } from '../../lib/advice-engine';
 import type { EnergySnapshot } from '../../lib/homey-energy-reader';
 
 type EnergyAIApp = Homey.App & {
@@ -14,20 +14,50 @@ class EnergyAIDevice extends Homey.Device {
   override async onInit(): Promise<void> {
     this.adviceChangedTrigger = this.homey.flow.getDeviceTriggerCard('advice_changed');
     await this.ensureCapabilities();
-    this.log('Energy AI v0.4.1 device initialized');
+    this.log('Energy AI v0.5.0 device initialized');
     await this.refreshAdvice();
-    this.refreshTimer = this.homey.setInterval(() => {
-      this.refreshAdvice().catch(this.error);
-    }, 60 * 1000);
+    this.startRefreshTimer();
   }
 
   override async onDeleted(): Promise<void> {
-    if (this.refreshTimer) this.homey.clearInterval(this.refreshTimer);
+    this.stopRefreshTimer();
   }
 
   override async onSettings(): Promise<string | void> {
+    this.startRefreshTimer();
     await this.refreshAdvice();
     return 'Instellingen opgeslagen';
+  }
+
+  private getNumberSetting(id: string, fallback: number, minimum = 0): number {
+    const configured = Number(this.getSetting(id) ?? fallback);
+    return Number.isFinite(configured) ? Math.max(minimum, configured) : fallback;
+  }
+
+  private getThresholds(): AdviceThresholds {
+    return {
+      evChargingPower: this.getNumberSetting('ev_charging_threshold', 250),
+      batteryActivePower: this.getNumberSetting('battery_active_threshold', 100),
+      gridDeadbandPower: this.getNumberSetting('grid_deadband_threshold', 100),
+      highImportPower: this.getNumberSetting('high_import_threshold', 2500),
+      solarSurplusPower: this.getNumberSetting('solar_surplus_threshold', 500),
+    };
+  }
+
+  private startRefreshTimer(): void {
+    this.stopRefreshTimer();
+    const refreshSeconds = this.getNumberSetting('refresh_interval_seconds', 60, 10);
+    this.refreshTimer = this.homey.setInterval(() => {
+      this.refreshAdvice().catch(this.error);
+    }, refreshSeconds * 1000);
+    this.log(`Energy refresh interval: ${refreshSeconds} seconds`);
+  }
+
+  private stopRefreshTimer(): void {
+    if (this.refreshTimer) {
+      this.homey.clearInterval(this.refreshTimer);
+      this.refreshTimer = undefined;
+    }
   }
 
   private async ensureCapabilities(): Promise<void> {
@@ -56,17 +86,20 @@ class EnergyAIDevice extends Homey.Device {
     try {
       const snapshot = await (this.homey.app as EnergyAIApp).readEnergySnapshot();
       const mode = String(this.getCapabilityValue('energy_ai_mode') ?? 'observe');
-      const configuredThreshold = Number(this.getSetting('ev_charging_threshold') ?? 250);
-      const evChargingThreshold = Number.isFinite(configuredThreshold)
-        ? Math.max(0, configuredThreshold)
-        : 250;
+      const thresholds = this.getThresholds();
 
       const filteredSnapshot: EnergySnapshot = {
         ...snapshot,
-        evPower: snapshot.evPower >= evChargingThreshold ? snapshot.evPower : 0,
+        evPower: snapshot.evPower >= thresholds.evChargingPower ? snapshot.evPower : 0,
+        batteryPower: Math.abs(snapshot.batteryPower) >= thresholds.batteryActivePower
+          ? snapshot.batteryPower
+          : 0,
+        gridPower: Math.abs(snapshot.gridPower) >= thresholds.gridDeadbandPower
+          ? snapshot.gridPower
+          : 0,
       };
 
-      const result = this.adviceEngine.evaluate(filteredSnapshot, mode, evChargingThreshold);
+      const result = this.adviceEngine.evaluate(filteredSnapshot, mode, thresholds);
       const updateTime = new Date().toLocaleTimeString('nl-NL', {
         hour: '2-digit',
         minute: '2-digit',
@@ -74,10 +107,10 @@ class EnergyAIDevice extends Homey.Device {
       });
 
       await Promise.all([
-        this.setCapabilityValue('energy_ai_grid_power', snapshot.gridPower),
+        this.setCapabilityValue('energy_ai_grid_power', filteredSnapshot.gridPower),
         this.setCapabilityValue('energy_ai_consumption_power', snapshot.consumptionPower),
         this.setCapabilityValue('energy_ai_solar_power', snapshot.solarPower),
-        this.setCapabilityValue('energy_ai_battery_power', snapshot.batteryPower),
+        this.setCapabilityValue('energy_ai_battery_power', filteredSnapshot.batteryPower),
         this.setCapabilityValue('energy_ai_ev_power', filteredSnapshot.evPower),
         this.setCapabilityValue('energy_ai_score', result.confidence),
         this.setCapabilityValue('energy_ai_advice', result.advice),
