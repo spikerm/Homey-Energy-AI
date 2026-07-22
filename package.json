@@ -1,6 +1,6 @@
 {
   "name": "com.rexm.energyai",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Local energy analysis and advisory automation for Homey Pro",
   "main": "app.js",
   "private": true,
