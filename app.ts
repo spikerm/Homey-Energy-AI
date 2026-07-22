@@ -8,7 +8,7 @@ class EnergyAIApp extends Homey.App {
   private recalculateAction?: Homey.FlowCardAction;
 
   override async onInit(): Promise<void> {
-    this.log('Homey Energy AI v0.3.0 initialized');
+    this.log('Homey Energy AI v0.4.0 initialized');
 
     try {
       const api = await HomeyAPI.createAppAPI({ homey: this.homey });
