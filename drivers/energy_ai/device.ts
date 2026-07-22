@@ -14,7 +14,7 @@ class EnergyAIDevice extends Homey.Device {
   override async onInit(): Promise<void> {
     this.adviceChangedTrigger = this.homey.flow.getDeviceTriggerCard('advice_changed');
     await this.ensureCapabilities();
-    this.log('Energy AI v0.4.0 device initialized');
+    this.log('Energy AI v0.4.1 device initialized');
     await this.refreshAdvice();
     this.refreshTimer = this.homey.setInterval(() => {
       this.refreshAdvice().catch(this.error);
@@ -23,6 +23,11 @@ class EnergyAIDevice extends Homey.Device {
 
   override async onDeleted(): Promise<void> {
     if (this.refreshTimer) this.homey.clearInterval(this.refreshTimer);
+  }
+
+  override async onSettings(): Promise<string | void> {
+    await this.refreshAdvice();
+    return 'Instellingen opgeslagen';
   }
 
   private async ensureCapabilities(): Promise<void> {
@@ -51,7 +56,17 @@ class EnergyAIDevice extends Homey.Device {
     try {
       const snapshot = await (this.homey.app as EnergyAIApp).readEnergySnapshot();
       const mode = String(this.getCapabilityValue('energy_ai_mode') ?? 'observe');
-      const result = this.adviceEngine.evaluate(snapshot, mode);
+      const configuredThreshold = Number(this.getSetting('ev_charging_threshold') ?? 250);
+      const evChargingThreshold = Number.isFinite(configuredThreshold)
+        ? Math.max(0, configuredThreshold)
+        : 250;
+
+      const filteredSnapshot: EnergySnapshot = {
+        ...snapshot,
+        evPower: snapshot.evPower >= evChargingThreshold ? snapshot.evPower : 0,
+      };
+
+      const result = this.adviceEngine.evaluate(filteredSnapshot, mode, evChargingThreshold);
       const updateTime = new Date().toLocaleTimeString('nl-NL', {
         hour: '2-digit',
         minute: '2-digit',
@@ -63,7 +78,7 @@ class EnergyAIDevice extends Homey.Device {
         this.setCapabilityValue('energy_ai_consumption_power', snapshot.consumptionPower),
         this.setCapabilityValue('energy_ai_solar_power', snapshot.solarPower),
         this.setCapabilityValue('energy_ai_battery_power', snapshot.batteryPower),
-        this.setCapabilityValue('energy_ai_ev_power', snapshot.evPower),
+        this.setCapabilityValue('energy_ai_ev_power', filteredSnapshot.evPower),
         this.setCapabilityValue('energy_ai_score', result.confidence),
         this.setCapabilityValue('energy_ai_advice', result.advice),
         this.setCapabilityValue('energy_ai_savings_today', result.savingsToday),
